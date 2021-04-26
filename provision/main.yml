@@ -1,21 +1,5 @@
 ---
-- hosts: all
-  become: yes
-  become_method: sudo
+- hosts: win
   tasks:
-    - name: Update OS
-      package:
-        name: '*'
-        state: latest
-    - name: Install vagrant
-      apt:
-        deb: https://releases.hashicorp.com/vagrant/2.2.15/vagrant_2.2.15_x86_64.deb
-    - name: Install VirtualBox
-      apt:
-        name: virtualbox
-        state: present
-    - name: Copy vagrant files
-      copy: src=kubernetes-setup dest=/tmp mode=0777
-
-    - name: Run Vagrant
-      shell: cd /tmp/kubernetes-setup && vagrant up
+    - name: 
+      win_shell: whoami
