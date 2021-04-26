@@ -1,7 +1,0 @@
-[win]
-win10hostvm.westeurope.cloudapp.azure.com
-
-[win:vars]
-ansible_user=adm1n
-ansible_connection=winrm
-ansible_winrm_server_cert_validation=ignore
