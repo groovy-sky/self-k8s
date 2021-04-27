@@ -1,12 +1,24 @@
 ---
-- hosts: win
+- hosts: localhost
+  become: yes
+  become_method: sudo
   tasks:
-    - name: 
-      win_shell: Disable-WindowsOptionalFeature -Online -FeatureName Microsoft-Hyper-V-All
-    - name: 
-      win_shell: iex ((new-object net.webclient).DownloadString('https://chocolatey.org/install.ps1'))
-    - name: 
-      win_shell: cinst virtualbox vagrant -y
-    - name: 
-      win_path:
-        elements: C:\HashiCorp\Vagrant\bin\vagrant.exe
+    - name: Install vagrant
+      apt:
+        deb: https://releases.hashicorp.com/vagrant/2.2.15/vagrant_2.2.15_x86_64.deb
+
+    - name: Install VirtualBox
+      apt:
+        name: virtualbox
+        state: present
+
+    - name: Install vagrant-vbguest
+      shell: vagrant plugin install vagrant-vbguest
+
+    - name: Copy vagrant files
+      copy: src=kubernetes-setup dest=/tmp mode=0777
+
+    - name: Run Vagrant
+      shell: vagrant up 
+      args:
+        chdir: /tmp/kubernetes-setup
