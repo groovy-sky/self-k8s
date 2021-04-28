@@ -1,0 +1,56 @@
+---
+- hosts: virtualbox
+  become: yes
+  become_method: sudo
+  tasks:
+    - name: Install vagrant
+      apt:
+        deb: https://releases.hashicorp.com/vagrant/2.2.15/vagrant_2.2.15_x86_64.deb
+
+    - name: Add ansible repository
+      ansible.builtin.apt_repository:
+        repo: ppa:ansible/ansible
+        state: present
+
+    - name: Install ansible
+      apt:
+        name: ansible
+        state: present 
+
+    - name: Install VirtualBox
+      apt:
+        name: virtualbox
+        state: present
+
+    - name: Install vagrant-vbguest
+      shell: vagrant plugin install vagrant-vbguest
+
+    - name: Create a primary partition
+      community.general.parted:
+        device: /dev/sda
+        number: 1
+        fs_type: ext4
+        state: present
+      tags: data-disk
+
+    - name: Create a ext4 filesystem on data disk
+      community.general.filesystem:
+        fstype: ext4
+        dev: /dev/sda1
+      tags: data-disk
+      
+    - name: Create a directory if it does not exist
+      ansible.builtin.file:
+        path: /mnt/data
+        state: directory
+        mode: '0770'
+      tags: data-disk
+
+    - name: Mount up data disk
+      ansible.posix.mount:
+        path: /mnt/data
+        src: /dev/sda1
+        fstype: ext4
+        state: mounted
+      tags: data-disk
+      

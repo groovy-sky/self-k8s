@@ -1,0 +1,13 @@
+---
+- hosts: virtualbox
+  become: yes
+  become_method: sudo
+  tasks:
+    - name: Copy vagrant files
+      copy: src=kubernetes-setup dest=/mnt/data mode=0777
+
+    - name: Run Vagrant
+      shell: vagrant up 
+      args:
+        chdir: /mnt/data/kubernetes-setup
+      tags: vagrant-init
