@@ -1,11 +1,21 @@
 ---
-- hosts: localhost
+- hosts: virtualbox
   become: yes
   become_method: sudo
   tasks:
     - name: Install vagrant
       apt:
         deb: https://releases.hashicorp.com/vagrant/2.2.15/vagrant_2.2.15_x86_64.deb
+
+    - name: Add ansible repository
+      ansible.builtin.apt_repository:
+        repo: ppa:ansible/ansible
+        state: present
+
+    - name: Install ansible
+      apt:
+        name: ansible
+        state: present 
 
     - name: Install VirtualBox
       apt:
