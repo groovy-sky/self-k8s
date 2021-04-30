@@ -11,3 +11,15 @@
       args:
         chdir: /mnt/data/kubernetes-setup
       tags: vagrant-init
+
+    - name: Copy systemd service file to server
+      copy:
+        src: vagrant-autostart.service
+        dest: /etc/systemd/system
+        owner: root
+        group: root
+
+    - name: Enable vagrant-autostart service
+      ansible.builtin.systemd:
+        name: vagrant-autostart
+        enabled: yes
