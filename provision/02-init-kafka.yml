@@ -1,0 +1,21 @@
+---
+- hosts: virtualbox
+  become: yes
+  become_method: sudo
+  tasks:
+    - name: Create a directory fo kubectl config
+      ansible.builtin.file:
+        path: ~/.kube/
+        state: directory
+
+    - name: Copy kubectl config
+      shell: cp /k8s/data/kubernetes-setup/config ~/.kube/config
+
+    - name: Copy kafka configuration files
+      copy: src=kafka-setup dest=/k8s/data mode=0777
+
+    - name: Run kafka deploy
+      shell: ansible-playbook main.yml
+      args:
+        chdir: /k8s/data/kafka-setup/
+      

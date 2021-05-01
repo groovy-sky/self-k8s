@@ -1,0 +1,22 @@
+---
+- hosts: localhost
+  collections:
+    - kubernetes.core
+  tasks:
+    - name: Create kafka namespace
+      k8s:
+        name: kafka
+        kind: Namespace
+        state: present
+
+    - name: Create kafka-cdrs.yaml deployment
+      k8s:
+        state: present
+        src: kafka-cdrs.yaml
+        namespace: kafka
+
+    - name: Create kafka cluster
+      shell: kubectl apply -f ./kafka-cluster.yaml -n kafka 
+
+    - name: Run kafka deploy
+      shell: kubectl wait kafka/my-cluster --for=condition=Ready --timeout=300s -n kafka 

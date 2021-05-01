@@ -3,7 +3,7 @@
   become: yes
   become_method: sudo
   tasks:
-    - name: Copy vagrant files
+    - name: Copy k8s configuration files
       copy: src=kubernetes-setup dest=/k8s/data mode=0777
 
     - name: Run Vagrant
