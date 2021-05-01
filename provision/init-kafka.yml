@@ -1,0 +1,25 @@
+---
+- hosts: virtualbox
+
+  collections:
+    - kubernetes.core
+  tasks:
+    - name: Create a directory fo kubectl config
+      ansible.builtin.file:
+        path: ~/.kube/
+        state: directory
+
+    - name: Copy kubectl config
+      shell: cp /k8s/data/kubernetes-setup/config ~/.kube/config.json
+
+    - name: Create kafka namespace
+      k8s:
+        name: kafka
+        kind: Namespace
+        state: present
+
+    - name: Create kafka deployment
+      k8s:
+        state: present
+        src: https://strimzi.io/install/latest?namespace=kafka
+        namespace: kafka

@@ -4,12 +4,12 @@
   become_method: sudo
   tasks:
     - name: Copy vagrant files
-      copy: src=kubernetes-setup dest=/mnt/data mode=0777
+      copy: src=kubernetes-setup dest=/k8s/data mode=0777
 
     - name: Run Vagrant
       shell: vagrant up 
       args:
-        chdir: /mnt/data/kubernetes-setup
+        chdir: /k8s/data/kubernetes-setup
       tags: vagrant-init
 
     - name: Copy systemd service file to server
