@@ -16,7 +16,11 @@
         namespace: kafka
 
     - name: Create kafka cluster
-      shell: kubectl apply -f ./kafka-cluster.yaml -n kafka 
+      shell: kubectl apply -f ./kafka-cluster.yaml -n kafka
+      args:
+        chdir: /k8s/kafka-setup
 
-    - name: Run kafka deploy
+    - name: Wait till deployment will be finished
       shell: kubectl wait kafka/my-cluster --for=condition=Ready --timeout=300s -n kafka 
+      args:
+        chdir: /k8s/kafka-setup
