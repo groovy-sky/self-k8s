@@ -9,13 +9,13 @@
         state: directory
 
     - name: Copy kubectl config
-      shell: cp /k8s/data/kubernetes-setup/config ~/.kube/config
+      shell: cp /k8s/kubernetes-setup/config ~/.kube/config
 
     - name: Copy kafka configuration files
-      copy: src=kafka-setup dest=/k8s/data mode=0777
+      copy: src=kafka-setup dest=/k8s mode=0777
 
     - name: Run kafka deploy
       shell: ansible-playbook main.yml
       args:
-        chdir: /k8s/data/kafka-setup/
+        chdir: /k8s/kafka-setup/
       

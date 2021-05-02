@@ -55,9 +55,6 @@
 
     - name: Install k8s ansible collection
       shell: ansible-galaxy collection install community.kubernetes
-
-    - name: Install k8s collection dependencies
-      shell: ansible-galaxy collection install -r requirements.yml
       
     - name: Install vagrant-vbguest
       shell: vagrant plugin install vagrant-vbguest

@@ -1,0 +1,9 @@
+[Unit]
+Description=Starts vagrant VMs
+After=syslog.target network.target
+
+[Service]
+ExecStart=/usr/bin/sudo /bin/sh -c 'cd /k8s/kubernetes-setup && /usr/bin/vagrant reload'
+
+[Install]
+WantedBy=multi-user.target
