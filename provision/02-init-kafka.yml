@@ -27,8 +27,10 @@
     - name: Copy kafka configuration files
       copy: src=kafka-setup dest=/k8s mode=0770
 
-    - name: Run kafka deploy
-      shell: ansible-playbook main.yml
-      args:
-        chdir: /k8s/kafka-setup/
-      
+    - name: Wait for master node
+      wait_for:
+        host: 127.0.0.1
+        port: 6443
+        delay: 10
+        timeout: 30
+      retries: 5
