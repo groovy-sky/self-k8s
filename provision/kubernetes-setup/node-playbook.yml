@@ -1,7 +1,23 @@
 ---
 - hosts: all
   become: true
+  vars: 
+    control_node_ip: "192.168.50.10"
+    worker_node_ip: "192.168.50.100"
   tasks:
+
+    - name: Modify hosts
+      ansible.builtin.lineinfile:
+        path: /etc/hosts
+        line: "{{ control_node_ip }} k8s-master"
+        create: yes
+
+    - name: Modify hosts
+      ansible.builtin.lineinfile:
+        path: /etc/hosts
+        line: "{{ worker_node_ip }} k8s-node"
+        create: yes
+
     - name: Install packages that allow apt to be used over HTTPS
       apt:
         name: "{{ packages }}"
@@ -75,8 +91,8 @@
         update_cache: yes
       vars:
         packages:
-          - kubelet 
-          - kubeadm 
+          - kubelet
+          - kubeadm
           - kubectl
 
     - name: detect docker's cgroup-driver

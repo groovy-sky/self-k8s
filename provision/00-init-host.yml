@@ -47,6 +47,7 @@
         - ca-certificates
         - curl
         - python-pip
+        - cifs-utils
         state: latest
 
     - name: Install openshift python package

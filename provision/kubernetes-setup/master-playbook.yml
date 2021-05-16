@@ -1,7 +1,23 @@
 ---
 - hosts: all
   become: true
+  vars: 
+    control_node_ip: "192.168.50.10"
+    worker_node_ip: "192.168.50.100"
   tasks:
+
+    - name: Modify hosts
+      ansible.builtin.lineinfile:
+        path: /etc/hosts
+        line: "{{ control_node_ip }} k8s-master"
+        create: yes
+
+    - name: Modify hosts
+      ansible.builtin.lineinfile:
+        path: /etc/hosts
+        line: "{{ worker_node_ip }} k8s-node"
+        create: yes
+
     - name: Install packages that allow apt to be used over HTTPS
       apt:
         name: "{{ packages }}"
@@ -76,8 +92,8 @@
         update_cache: yes
       vars:
         packages:
-          - kubelet 
-          - kubeadm 
+          - kubelet
+          - kubeadm
           - kubectl
 
     - name: Configure node ip
@@ -93,7 +109,7 @@
         state: restarted
 
     - name: Initialize the Kubernetes cluster using kubeadm
-      command: kubeadm init --apiserver-advertise-address="192.168.50.10" --apiserver-cert-extra-sans="192.168.50.10" --pod-network-cidr=192.168.0.0/16
+      command: "kubeadm init --apiserver-advertise-address={{ control_node_ip }} --apiserver-cert-extra-sans=0.0.0.0 --pod-network-cidr=10.50.0.0/16"
 
     - name: Setup kubeconfig for vagrant user
       command: "{{ item }}"
@@ -104,7 +120,7 @@
 
     - name: Install networking
       become: false
-      command: kubectl apply -f https://docs.projectcalico.org/manifests/calico.yaml
+      command: kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
 
     - name: Generate join command
       command: kubeadm token create --print-join-command
