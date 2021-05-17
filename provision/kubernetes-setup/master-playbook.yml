@@ -92,9 +92,9 @@
         update_cache: yes
       vars:
         packages:
-          - kubelet
-          - kubeadm
-          - kubectl
+          - kubelet=1.21.1-00
+          - kubeadm=1.21.1-00
+          - kubectl=1.21.1-00
 
     - name: Configure node ip
       lineinfile:
@@ -109,7 +109,7 @@
         state: restarted
 
     - name: Initialize the Kubernetes cluster using kubeadm
-      command: "kubeadm init --apiserver-advertise-address={{ control_node_ip }} --apiserver-cert-extra-sans=0.0.0.0 --pod-network-cidr=10.50.0.0/16"
+      command: "kubeadm init --apiserver-advertise-address {{ control_node_ip }} --pod-network-cidr 10.244.0.0/16 --service-cidr 10.166.0.0/16"
 
     - name: Setup kubeconfig for vagrant user
       command: "{{ item }}"
@@ -120,7 +120,7 @@
 
     - name: Install networking
       become: false
-      command: kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+      command: kubectl apply -f "/vagrant/flannel.yml"
 
     - name: Generate join command
       command: kubeadm token create --print-join-command
